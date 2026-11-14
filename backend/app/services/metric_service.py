@@ -149,6 +149,8 @@ def upsert_metric(
     data: MetricIn,
     source: MetricSource = MetricSource.MANUAL,
     import_batch: str | None = None,
+    *,
+    commit: bool = True,
 ) -> MetricOut:
     campaign, channel = _resolve_target(db, data.campaign_id, data.channel_id, data.channel_code)
     validate_metric_counts(data.views, data.clicks, data.conversions, data.cost)
@@ -171,7 +173,10 @@ def upsert_metric(
         existing.entered_by = user.id
         if import_batch:
             existing.import_batch = import_batch
-        db.commit()
+        if commit:
+            db.commit()
+        else:
+            db.flush()
         db.refresh(existing)
         return metric_out(existing)
 
@@ -188,7 +193,10 @@ def upsert_metric(
         import_batch=import_batch,
     )
     db.add(metric)
-    db.commit()
+    if commit:
+        db.commit()
+    else:
+        db.flush()
     db.refresh(metric)
     return metric_out(metric)
 

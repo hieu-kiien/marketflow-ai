@@ -307,3 +307,67 @@ def test_confirm_metrics_validates_all_rows_before_writing(
     assert db.query(Metric).filter(Metric.campaign_id == sample_campaign.id).count() == 0
     db.refresh(action)
     assert action.status == AiActionStatus.PROPOSED
+
+
+def test_confirm_content_drafts_rolls_back_atomically_on_partial_failure(
+    db: Session,
+    marketer1_user: User,
+    sample_campaign: Campaign,
+    test_action_fixture: tuple[AiThread, AiMessage, AiAction],
+    monkeypatch,
+):
+    """Nếu phần draft lỗi sau khi phần pending đã flush, toàn bộ transaction phải rollback."""
+    from app.core.errors import ValidationFailed
+    from app.models import Content
+    from app.services import content_service
+
+    thread, message, _ = test_action_fixture
+    action = AiAction(
+        thread_id=thread.id,
+        message_id=message.id,
+        user_id=marketer1_user.id,
+        tool="propose_content_drafts",
+        args_json={
+            "campaign_id": sample_campaign.id,
+            "items": [
+                {
+                    "campaign_id": sample_campaign.id,
+                    "channel_code": "FACEBOOK",
+                    "content_type": "POST",
+                    "title": "Bài 1 pending",
+                    "body": "Nội dung bài 1 đủ dài để hợp lệ.",
+                    "status": "PENDING_REVIEW",
+                },
+                {
+                    "campaign_id": sample_campaign.id,
+                    "channel_code": "FACEBOOK",
+                    "content_type": "POST",
+                    "title": "Bài 2 draft",
+                    "body": "Nội dung bài 2 đủ dài để hợp lệ.",
+                    "status": "DRAFT",
+                },
+            ],
+        },
+        summary="Tạo 2 bài",
+        status=AiActionStatus.PROPOSED,
+    )
+    db.add(action)
+    db.commit()
+
+    orig_create = content_service.create_contents
+    call_count = {"n": 0}
+
+    def fail_second_call(*args, **kwargs):
+        call_count["n"] += 1
+        if call_count["n"] == 2:
+            raise ValidationFailed("Giả lập lỗi ở lượt thứ 2")
+        return orig_create(*args, **kwargs)
+
+    monkeypatch.setattr(content_service, "create_contents", fail_second_call)
+
+    with pytest.raises(ValidationFailed):
+        actions_service.confirm(db, marketer1_user, action.id)
+
+    assert db.query(Content).filter(Content.campaign_id == sample_campaign.id, Content.title == "Bài 1 pending").count() == 0
+    db.refresh(action)
+    assert action.status == AiActionStatus.PROPOSED

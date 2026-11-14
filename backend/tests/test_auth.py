@@ -92,7 +92,19 @@ def test_change_password(client: TestClient, marketer1_headers: dict[str, str], 
     assert new_resp.status_code == 200
 
 
-def test_register_success_and_validation(client: TestClient, manager_user: User):
+def test_register_success_and_validation(client: TestClient, manager_user: User, monkeypatch):
+    from app.core.config import settings
+
+    # Mặc định self-register tắt (fail-closed)
+    closed_resp = client.post(
+        "/api/v1/auth/register",
+        json={"email": "blocked@marketflow.vn", "full_name": "Bị Chặn", "password": "NewUser@123"},
+    )
+    assert closed_resp.status_code == 403
+    assert closed_resp.json()["detail"]["code"] == "REGISTER_DISABLED"
+
+    monkeypatch.setattr(settings, "ALLOW_SELF_REGISTER", True)
+
     # Weak password rejected
     weak = client.post(
         "/api/v1/auth/register",
@@ -101,7 +113,7 @@ def test_register_success_and_validation(client: TestClient, manager_user: User)
     assert weak.status_code == 422
     assert weak.json()["detail"]["code"] == "VALIDATION_ERROR"
 
-    # Successful registration defaults to MANAGER and issues JWT
+    # Successful registration defaults strictly to MARKETER (least privilege) and issues JWT
     resp = client.post(
         "/api/v1/auth/register",
         json={"email": "NewUser@MarketFlow.vn", "full_name": "Nguyễn Văn Mới", "password": "NewUser@123"},
@@ -111,7 +123,7 @@ def test_register_success_and_validation(client: TestClient, manager_user: User)
     assert "access_token" in data
     assert data["user"]["email"] == "newuser@marketflow.vn"
     assert data["user"]["full_name"] == "Nguyễn Văn Mới"
-    assert data["user"]["role"] == "MANAGER"
+    assert data["user"]["role"] == "MARKETER"
 
     # Duplicate email rejected (409)
     dup = client.post(
@@ -139,7 +151,10 @@ def test_login_rate_limit_not_bypassed_by_spoofed_forwarded_header(client: TestC
     assert resp.status_code == 429
 
 
-def test_register_rate_limited_per_ip(client: TestClient):
+def test_register_rate_limited_per_ip(client: TestClient, monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "ALLOW_SELF_REGISTER", True)
     for i in range(5):
         resp = client.post(
             "/api/v1/auth/register",
@@ -152,6 +167,22 @@ def test_register_rate_limited_per_ip(client: TestClient):
     )
     assert resp.status_code == 429
     assert resp.json()["detail"]["code"] == "REGISTER_RATE_LIMITED"
+
+
+def test_production_config_rejects_placeholder_secrets():
+    import pytest
+
+    from app.core.config import Settings
+
+    s = Settings(
+        APP_ENV="production",
+        DATABASE_URL="postgresql://user:pass@postgres:5432/db",
+        JWT_SECRET="insecure_docker_compose_jwt_secret_32chars_min",
+        AI_RUNNER_URL="http://ai-runner:8100",
+        AI_RUNNER_TOKEN="marketflow_docker_runner_token_secret_32c",
+    )
+    with pytest.raises(RuntimeError, match="JWT_SECRET"):
+        s.validate_for_runtime()
 
 
 def test_register_can_be_disabled(client: TestClient, monkeypatch):

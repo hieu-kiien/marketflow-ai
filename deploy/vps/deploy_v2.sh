@@ -194,16 +194,16 @@ chown -R marketflow:marketflow /opt/marketflow/backend /opt/marketflow/.venv
 echo "    Chay Alembic migration tren marketflow_v2..."
 sudo -u marketflow bash -c "cd /opt/marketflow/backend && /opt/marketflow/.venv/bin/alembic upgrade head"
 
-# Seed demo chi chay lan dau
+# Seed demo chi chay khi nguoi van hanh bat tuong minh SEED_DEMO=true
 SEED_FLAG="/opt/marketflow/backend/.seed_v2_done"
-if [ ! -f "$SEED_FLAG" ]; then
-    echo "    Lan dau cai dat v2: nap du lieu mau (seed demo)..."
+if [ "${SEED_DEMO:-false}" = "true" ] && [ ! -f "$SEED_FLAG" ]; then
+    echo "    SEED_DEMO=true: nap du lieu mau..."
     sudo -u marketflow bash -c "cd /opt/marketflow/backend && /opt/marketflow/.venv/bin/python seed/seed_demo.py --force"
     touch "$SEED_FLAG"
     chown marketflow:marketflow "$SEED_FLAG"
     echo "    Da nap du lieu mau thanh cong!"
 else
-    echo "    Flag $SEED_FLAG da ton tai -> bo qua seed de tranh ghi de du lieu."
+    echo "    Bo qua seed demo mac dinh tren production (dat SEED_DEMO=true neu muon khoi tao mau)."
 fi
 
 # ------------------------------------------------------------------------------
@@ -290,15 +290,19 @@ if ! echo "$HEALTH_RESP" | grep -q '"status":"ok"'; then
     exit 1
 fi
 
-echo "    [Smoke 2] Kiem tra dang nhap manager@marketflow.vn..."
-LOGIN_RESP=$(curl -s -X POST http://127.0.0.1:8080/api/v1/auth/login \
-    -H "Content-Type: application/json" \
-    -d '{"email":"manager@marketflow.vn","password":"Manager@123"}' || true)
-if echo "$LOGIN_RESP" | grep -q '"access_token"'; then
-    echo "    Dang nhap Manager thanh cong!"
+if [ "${SEED_DEMO:-false}" = "true" ]; then
+    echo "    [Smoke 2] SEED_DEMO=true: kiem tra dang nhap tai khoan mau..."
+    LOGIN_RESP=$(curl -s -X POST http://127.0.0.1:8080/api/v1/auth/login \
+        -H "Content-Type: application/json" \
+        -d '{"email":"manager@marketflow.vn","password":"Manager@123"}' || true)
+    if echo "$LOGIN_RESP" | grep -q '"access_token"'; then
+        echo "    Dang nhap Manager thanh cong!"
+    else
+        echo "ERROR: Dang nhap that bai! Phan hoi: $LOGIN_RESP" >&2
+        exit 1
+    fi
 else
-    echo "ERROR: Dang nhap that bai! Phan hoi: $LOGIN_RESP" >&2
-    exit 1
+    echo "    [Smoke 2] Bo qua smoke login mat khau mau tren production."
 fi
 
 echo "    [Smoke 3] Kiem tra Nginx chan truy cap ngoai vao /mcp..."

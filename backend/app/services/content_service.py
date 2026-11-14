@@ -265,6 +265,7 @@ def create_contents(
     origin: ContentOrigin = ContentOrigin.MANUAL,
     ai_message_id: int | None = None,
     submit: bool = False,
+    commit: bool = True,
 ) -> list[ContentOut]:
     """Tạo nhiều nội dung trong một giao dịch (lỗi một mục → không tạo mục nào)."""
     try:
@@ -276,9 +277,11 @@ def create_contents(
         if submit:
             for content in created:
                 _notify_managers_pending(db, user, content)
-        db.commit()
+        if commit:
+            db.commit()
     except Exception:
-        db.rollback()
+        if commit:
+            db.rollback()
         raise
     for content in created:
         db.refresh(content)

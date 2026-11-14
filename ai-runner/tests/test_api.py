@@ -49,6 +49,15 @@ async def test_run_auth_unauthorized():
 
 
 @pytest.mark.asyncio
+async def test_run_auth_fails_closed_when_runner_token_empty():
+    runner.s.runner_token = ""
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        resp = await client.post("/run", json={"prompt": "test"})
+        assert resp.status_code == 503
+        assert resp.json()["detail"]["code"] == "RUNNER_TOKEN_NOT_CONFIGURED"
+
+
+@pytest.mark.asyncio
 async def test_run_validation_empty_prompt():
     headers = {"X-Runner-Token": "test_secret_token"}
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:

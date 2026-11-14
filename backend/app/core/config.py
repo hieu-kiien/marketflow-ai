@@ -12,6 +12,14 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 
 DEFAULT_JWT_SECRET = "dev-only-insecure-secret-change-me"
 DEFAULT_DATABASE_URL = f"sqlite:///{(BACKEND_DIR / 'data' / 'marketflow.db').as_posix()}"
+INSECURE_PLACEHOLDER_SECRETS = frozenset(
+    {
+        DEFAULT_JWT_SECRET,
+        "insecure_docker_compose_jwt_secret_32chars_min",
+        "marketflow_docker_runner_token_secret_32c",
+        "change-me-in-production-min-32-chars",
+    }
+)
 
 
 class Settings(BaseSettings):
@@ -43,8 +51,8 @@ class Settings(BaseSettings):
     LOGIN_MAX_FAILURES: int = 5
     LOGIN_WINDOW_SECONDS: int = 5 * 60
 
-    # Tự đăng ký tài khoản (luôn tạo vai trò MARKETER). Tắt khi chỉ muốn Quản lý cấp tài khoản.
-    ALLOW_SELF_REGISTER: bool = True
+    # Tự đăng ký tài khoản (luôn tạo vai trò MARKETER). Mặc định tắt; chỉ bật khi cần mở đăng ký công khai.
+    ALLOW_SELF_REGISTER: bool = False
     REGISTER_MAX_PER_HOUR: int = 5  # số lần đăng ký tối đa mỗi giờ cho mỗi địa chỉ IP
 
     @field_validator("APP_ENV")
@@ -65,12 +73,15 @@ class Settings(BaseSettings):
         if not self.is_production:
             return
         problems: list[str] = []
-        if not self.JWT_SECRET or self.JWT_SECRET == DEFAULT_JWT_SECRET or len(self.JWT_SECRET) < 32:
-            problems.append("JWT_SECRET phải được đặt (>= 32 ký tự, khác giá trị mặc định)")
+        jwt_val = (self.JWT_SECRET or "").strip()
+        if not jwt_val or jwt_val in INSECURE_PLACEHOLDER_SECRETS or len(jwt_val) < 32:
+            problems.append("JWT_SECRET phải được đặt (>= 32 ký tự, khác giá trị mặc định/mẫu)")
         if self.DATABASE_URL.startswith("sqlite"):
             problems.append("DATABASE_URL production phải là PostgreSQL")
-        if self.AI_RUNNER_URL and not self.AI_RUNNER_TOKEN:
-            problems.append("AI_RUNNER_TOKEN phải được đặt khi có AI_RUNNER_URL")
+        if self.AI_RUNNER_URL:
+            runner_tok = (self.AI_RUNNER_TOKEN or "").strip()
+            if not runner_tok or runner_tok in INSECURE_PLACEHOLDER_SECRETS or len(runner_tok) < 32:
+                problems.append("AI_RUNNER_TOKEN phải được đặt (>= 32 ký tự, khác giá trị mẫu) khi có AI_RUNNER_URL")
         if problems:
             raise RuntimeError("Cấu hình production không hợp lệ: " + "; ".join(problems))
 

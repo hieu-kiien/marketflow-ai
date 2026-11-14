@@ -49,10 +49,13 @@ app = FastAPI(
 
 
 def verify_runner_token(x_runner_token: str | None = Header(None, alias="X-Runner-Token")) -> None:
-    expected = runner.s.runner_token
+    expected = (runner.s.runner_token or "").strip()
     if not expected:
-        return
-    if not x_runner_token or x_runner_token.strip() != expected.strip():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"code": "RUNNER_TOKEN_NOT_CONFIGURED", "message": "Dịch vụ chưa cấu hình RUNNER_TOKEN (fail-closed)."},
+        )
+    if not x_runner_token or x_runner_token.strip() != expected:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "UNAUTHORIZED", "message": "Mã xác thực X-Runner-Token không hợp lệ hoặc thiếu."},

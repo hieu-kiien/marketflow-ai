@@ -129,6 +129,7 @@ def confirm(
                         origin=ContentOrigin.AI,
                         ai_message_id=action.message_id,
                         submit=True,
+                        commit=False,
                     )
                 )
             if draft_items:
@@ -140,6 +141,7 @@ def confirm(
                         origin=ContentOrigin.AI,
                         ai_message_id=action.message_id,
                         submit=False,
+                        commit=False,
                     )
                 )
 
@@ -258,7 +260,7 @@ def confirm(
                 else:
                     inserted_count += 1
 
-                m = metric_service.upsert_metric(db, user, metric_in, source=MetricSource.MANUAL)
+                m = metric_service.upsert_metric(db, user, metric_in, source=MetricSource.MANUAL, commit=False)
                 metric_ids.append(m.id)
 
             result_json = {
