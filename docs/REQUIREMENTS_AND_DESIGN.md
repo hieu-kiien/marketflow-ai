@@ -1,8 +1,6 @@
-# Tài Liệu Phân Tích Yêu Cầu & Thiết Kế Hệ Thống (KT1)
+# Tài Liệu Phân Tích Yêu Cầu & Thiết Kế Hệ Thống
 
-> Học phần: Ứng dụng trí tuệ nhân tạo (AIA331)  
-> Đề tài: Hệ thống quản lý chiến dịch marketing có tích hợp AI (Mã số: 80300)  
-> Phiên bản hệ thống: MarketFlow  
+> Hệ thống: MarketFlow — Nền tảng Quản lý Chiến dịch Marketing Tích hợp AI  
 > Ngày lập: 24/10/2026  
 
 ---

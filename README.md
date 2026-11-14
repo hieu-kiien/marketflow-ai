@@ -1,7 +1,11 @@
 # MarketFlow — Hệ Thống Quản Lý Chiến Dịch Marketing Có Tích Hợp AI
 
-> **Dự án môn học**: Ứng dụng trí tuệ nhân tạo (AIA331) — Mã số đề tài: 80300  
-> **Trường**: Trường Đại học Công nghệ Thông tin & Truyền thông — Đại học Thái Nguyên  
+[![CI](https://github.com/hieu-kiien/marketflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/hieu-kiien/marketflow-ai/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-marketing.kienhieu.id.vn-0D9488)](https://marketing.kienhieu.id.vn/)
+![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React%20%2B%20TypeScript-Vite-61DAFB?logo=react&logoColor=black)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 > **Trạng thái kiểm thử**: **151 ca kiểm thử tự động** (104 Backend Pytest + 18 AI-Runner Pytest + 29 Playwright E2E) — **100% Pass**  
 > **Hạ tầng Production**: [https://marketing.kienhieu.id.vn/](https://marketing.kienhieu.id.vn/) (Cloudflare Tunnel → VPS Ubuntu 24.04 LTS)  
 
@@ -172,9 +176,15 @@ Truy cập ứng dụng qua cổng `http://localhost:8080`.
 
 Toàn bộ tài liệu chi tiết của dự án được lưu trữ trong thư mục `docs/`:
 
-- [Tài liệu Phân tích Yêu cầu & Thiết kế Hệ thống (KT1)](docs/REQUIREMENTS_AND_DESIGN.md): Bối cảnh SME, 2 vai trò người dùng, bảng Input/Process/Output, yêu cầu phi chức năng, sơ đồ Use Case, ERD 14 bảng CSDL và luồng dữ liệu.
-- [Đặc tả Phân hệ Trợ lý AI (KT3)](docs/AI_ASSISTANT.md): Kiến trúc AI Runner, danh mục 14 công cụ MCP, bộ chọn 13 mô hình đa nền tảng, giao thức sự kiện SSE, tối ưu prompt qua 4 giai đoạn cải tiến, xử lý lỗi và quy trình con người duyệt đề xuất.
+- [Tài liệu Phân tích Yêu cầu & Thiết kế Hệ thống](docs/REQUIREMENTS_AND_DESIGN.md): Bối cảnh SME, 2 vai trò người dùng, bảng Input/Process/Output, yêu cầu phi chức năng, sơ đồ Use Case, ERD 14 bảng CSDL và luồng dữ liệu.
+- [Đặc tả Phân hệ Trợ lý AI](docs/AI_ASSISTANT.md): Kiến trúc AI Runner, danh mục 14 công cụ MCP, bộ chọn 13 mô hình đa nền tảng, giao thức sự kiện SSE, tối ưu prompt qua 4 giai đoạn cải tiến, xử lý lỗi và quy trình con người duyệt đề xuất.
 - [Đạo đức AI & Quyền Riêng tư Dữ liệu](docs/AI_ETHICS_AND_PRIVACY.md): Bảo vệ khoá xác thực, phạm vi dữ liệu gửi cho mô hình, điều khoản huấn luyện của mô hình miễn phí, các biện pháp chống ảo giác và minh chứng phòng thủ Prompt Injection.
 - [Kế hoạch & Danh mục Ca Kiểm thử (Testing)](docs/TESTING.md): Hướng dẫn chạy từng bộ test, số liệu đo lường thực tế, danh mục 151 ca kiểm thử tự động (104 Backend Pytest + 18 AI-Runner Pytest + 29 Playwright E2E) và 8 ca đánh giá Prompt.
-- [Minh chứng Ứng dụng AI Trong SDLC](docs/AI_IN_SDLC.md): Nhật ký sử dụng AI xuyên suốt các giai đoạn KT1 (phân tích yêu cầu & kiểm định rủi ro kiến trúc), KT2 (lập trình đa tác nhân), KT3 (thực nghiệm P0 Spike trên VPS) và đánh giá chất lượng tự động.
+- [Ứng dụng AI Trong Vòng Đời Phát Triển Phần Mềm (AI in SDLC)](docs/AI_IN_SDLC.md): Nhật ký phân tích rủi ro kiến trúc, lập trình đa tác nhân, thực nghiệm P0 Spike trên VPS và đánh giá chất lượng tự động.
 - [Hướng dẫn Triển khai Máy chủ VPS](docs/DEPLOYMENT-VPS.md): Hướng dẫn cấu hình systemd, Nginx, PostgreSQL và Cloudflare Tunnel trên máy chủ sản xuất thực tế.
+
+---
+
+## 9. Giấy phép (License)
+
+Phát hành theo [MIT License](./LICENSE).

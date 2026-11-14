@@ -1,8 +1,7 @@
 # MarketFlow — Design Contract (nguồn sự thật chung cho mọi agent)
 
-> Branch: `rebuild/v2`. Code cũ tham khảo qua tag `legacy-v1` (`git show legacy-v1:<path>`).
+> Branch: `main`.
 > Ngôn ngữ UI & thông báo lỗi: **tiếng Việt**. Code, tên biến, enum: tiếng Anh.
-> Đề bài gốc: `de_tai_AIA331_80300.txt`, rubric: `yeu_cau_mon_hoc_AIA331.txt`.
 
 ## 0. Luật chống "tính năng ảo" (bắt buộc)
 

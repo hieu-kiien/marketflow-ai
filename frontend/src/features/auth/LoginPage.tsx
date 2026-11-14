@@ -216,7 +216,7 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 flex items-center justify-between text-xs text-stone-500 border-t border-white/10 pt-6">
-          <span>© 2026 MarketFlow · Học phần AIA331</span>
+          <span>© 2026 MarketFlow · AI Marketing Operations</span>
           <span className="font-mono">Phân quyền RBAC • Trợ lý AI • Kiểm duyệt nội dung</span>
         </div>
       </aside>

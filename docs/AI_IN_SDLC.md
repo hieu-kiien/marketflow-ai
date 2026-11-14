@@ -1,8 +1,7 @@
 # Minh Chứng Ứng Dụng AI Trong Vòng Đời Phát Triển Phần Mềm (AI in SDLC)
 
-> Học phần: Ứng dụng trí tuệ nhân tạo (AIA331)  
 > Hệ thống: MarketFlow  
-> Mục tiêu: Ghi nhận minh chứng thực tế về việc ứng dụng AI xuyên suốt các giai đoạn KT1, KT2, KT3 và Đánh giá cuối kỳ  
+> Mục tiêu: Ghi nhận quy trình ứng dụng AI xuyên suốt phân tích yêu cầu, phát triển đa tác nhân, thực nghiệm P0 trên VPS và đánh giá tự động  
 
 ---
 
@@ -28,9 +27,9 @@ Trong dự án MarketFlow, Trí tuệ Nhân tạo được sử dụng có hệ 
    - *Rủi ro thực thi lệnh hệ thống (Shell Injection)*: Khóa chặt toàn bộ quyền `bash`, `edit`, `write`, `webfetch` của tiến trình `opencode run`, chỉ cho phép gọi 14 công cụ MCP nội bộ.
 
 ### 2.2. Thiết kế Tài liệu Hợp đồng Kiến trúc (Design Contract)
-Dựa trên kết quả phân tích của AI và yêu cầu môn học, kỹ sư con người đã chỉ đạo AI xây dựng bản **Design Contract** làm nguồn chân lý duy nhất cho toàn bộ quá trình phát triển:
+Dựa trên kết quả phân tích kiến trúc và yêu cầu sản phẩm, kỹ sư phụ trách đã xây dựng bản **Design Contract** làm nguồn chân lý duy nhất cho toàn bộ quá trình phát triển:
 - Ban hành **Rule 0 (Luật chống tính năng ảo)**: Nghiêm cấm hiển thị bất kỳ con số nào không đến từ dữ liệu người dùng nhập hoặc import thật; cấm giả lập kết nối mạng xã hội bên ngoài; AI chỉ được tạo đề xuất bản nháp (`ai_action = PROPOSED`).
-- Thiết kế CSDL gồm đúng **14 bảng chuẩn 3NF** bám sát đề tài 80300.
+- Thiết kế CSDL gồm đúng **14 bảng chuẩn 3NF**.
 - Thiết kế phân quyền gồm đúng **2 vai trò thực tế**: `MANAGER` và `MARKETER`.
 
 ---

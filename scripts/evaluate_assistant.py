@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Đánh giá Trợ lý AI MarketFlow qua 3 phiên bản Prompt (AIA331 - Rubric KT3).
+"""Đánh giá Trợ lý AI MarketFlow qua các phiên bản Prompt.
 
 Script thực hiện kiểm thử tự động, định lượng hoá chất lượng câu trả lời của Trợ lý AI
-qua các vòng thử nghiệm (v1, v2, v3), tuân thủ tiêu chí đánh giá môn học AIA331:
+qua các vòng thử nghiệm (v1, v2, v3), tuân thủ bộ tiêu chí kiểm định chất lượng:
 - Tối ưu prompt qua ít nhất 3 vòng thử nghiệm (v1 -> v2 -> v3).
 - Chấm điểm bằng các kiểm tra xác định (deterministic checks):
   + Độ chính xác tiếng Việt & văn phong SME.

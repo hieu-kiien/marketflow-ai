@@ -1,6 +1,5 @@
-# Phân Hệ Trợ Lý AI — Kiến Trúc, Công Cụ & Tối Ưu Prompt (KT3)
+# Phân Hệ Trợ Lý AI — Kiến Trúc, Công Cụ & Tối Ưu Prompt
 
-> Học phần: Ứng dụng trí tuệ nhân tạo (AIA331)  
 > Hệ thống: MarketFlow  
 > Đối tượng: Trợ lý Marketing AI (`marketflow`)  
 > Căn cứ kỹ thuật: `docs/rebuild/CONTRACT.md`, `docs/rebuild/P0_SPIKE_REPORT.md`, `deploy/opencode/prompts/*`  

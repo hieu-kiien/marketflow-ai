@@ -1,8 +1,7 @@
 # Đạo Đức Trí Tuệ Nhân Tạo & Quyền Riêng Tư Dữ Liệu (AI Ethics & Privacy)
 
-> Học phần: Ứng dụng trí tuệ nhân tạo (AIA331)  
 > Hệ thống: MarketFlow  
-> Tài liệu: Báo cáo tuân thủ Đạo đức AI & Bảo vệ quyền riêng tư  
+> Tài liệu: Kiến trúc bảo mật, quyền riêng tư dữ liệu & chống ảo giác AI  
 > Căn cứ kỹ thuật: `docs/rebuild/CONTRACT.md`, `docs/rebuild/P0_SPIKE_REPORT.md`  
 
 ---
