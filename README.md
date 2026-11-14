@@ -101,8 +101,8 @@ python -m alembic upgrade head
 # 5. Nạp dữ liệu mẫu demo
 python seed/seed_demo.py --reset
 
-# 6. Khởi động máy chủ backend tại cổng 8000
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+# 6. Khởi động máy chủ backend tại cổng 8000 (single-worker cho SSE EventBus/turn lock in-memory)
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --reload
 ```
 API Docs Swagger UI có sẵn tại: `http://127.0.0.1:8000/docs`.
 
@@ -164,11 +164,14 @@ Truy cập ứng dụng qua cổng `http://localhost:8080`.
 
 ---
 
-## 7. Các Hạn chế Thực tế (Honest Limitations)
+## 7. Đánh Đổi Kiến Trúc & Giới Hạn Hiện Tại (Design Trade-offs & Limitations)
 
-1. **Hạn mức Tần suất Gọi AI (Free Tier Rate Limits)**: Khi một nhà cung cấp mô hình miễn phí chạm giới hạn tốc độ (HTTP 429) vào khung giờ cao điểm, dịch vụ `ai-runner` tự động chuyển đổi sang chuỗi 12 mô hình dự phòng đa nền tảng (`glm-5.3-flash-free`, `mimo-v2.6-flash-free`, `groq/openai/gpt-oss-120b`, `groq/qwen/qwen3.8-27b`, `nemotron-3.5-super-vl:free`, `gemini-3.5-flash-lite`...) và báo lỗi trung thực nếu tất cả đều bận.
-2. **Không Tự Động Đăng Bài Lên Mạng Xã Hội**: Hệ thống không tích hợp API tự động xuất bản (để tránh rủi ro khoá tài khoản mạng xã hội của doanh nghiệp). Lịch đăng bài đóng vai trò lập kế hoạch; nhân viên tự đăng bài ra kênh ngoài và cập nhật liên kết xác nhận.
-3. **Giới hạn Đồng thời trên Máy chủ Đơn (Concurrency = 1)**: Do mỗi tiến trình OpenCode tiêu thụ ~490 MB RAM RSS, máy chủ VPS giới hạn xử lý tuần tự từng yêu cầu một để đảm bảo không bị cạn kiệt RAM. Các yêu cầu gửi đồng thời sẽ được xếp vào hàng đợi chờ ngắn (tối đa 8 vị trí).
+Dự án được phát triển ở quy mô sinh viên IT trên một VPS đơn (2 vCPU / 2 GB RAM) với các đánh đổi kỹ thuật có chủ đích sau:
+
+1. **Single-Worker Backend (`--workers 1`) cho `AssistantEventBus` & `_running_turns`**: Hàng đợi phát sự kiện SSE (`AssistantEventBus`) và bảng theo dõi lượt chạy theo thread (`_running_turns`) lưu trong bộ nhớ tiến trình FastAPI (`Dockerfile`, `docker-compose.yml` và `deploy/vps/marketflow-api.service` đều khóa `--workers 1`). Mở rộng sang nhiều worker/instance sẽ cần chuyển state sang Redis Pub/Sub và distributed lock.
+2. **Subprocess-per-Turn trên `ai-runner` (`Concurrency = 1`)**: Do mỗi tiến trình OpenCode CLI tiêu thụ ~490 MB RAM RSS, `ai-runner` xếp tuần tự từng lượt chạy (tối đa 8 vị trí chờ trong hàng đợi) để bảo vệ RAM VPS thay vì sinh nhiều agent đồng thời.
+3. **Ranh giới Con người Phê duyệt (`AiAction` HITL Boundary) & Không Auto-Publish**: Mọi công cụ ghi dữ liệu từ MCP chỉ tạo bản ghi `AiAction` trạng thái `PROPOSED`; người dùng phải xem và bấm **Xác nhận** để thực thi bằng đúng quyền RBAC của mình. Hệ thống cố ý không tích hợp API tự đăng lên mạng xã hội thật.
+4. **Hạn mức Tần suất Gọi AI (Free Tier Rate Limits)**: Khi một nhà cung cấp mô hình miễn phí chạm giới hạn tốc độ (HTTP 429) vào khung giờ cao điểm, dịch vụ `ai-runner` tự động chuyển đổi sang chuỗi 12 mô hình dự phòng đa nền tảng (`glm-5.3-flash-free`, `mimo-v2.6-flash-free`, `groq/openai/gpt-oss-120b`, `groq/qwen/qwen3.8-27b`, `nemotron-3.5-super-vl:free`, `gemini-3.5-flash-lite`...) và báo lỗi trung thực nếu tất cả đều bận.
 
 ---
 

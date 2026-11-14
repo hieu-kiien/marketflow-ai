@@ -1,7 +1,7 @@
 # MarketFlow AI Runner Service
 
-Dịch vụ nội bộ (Internal Service) thực thi OpenCode CLI cho Trợ lý Marketing AI MarketFlow v2.
-Tuân thủ chặt chẽ đặc tả thiết kế tại `docs/rebuild/CONTRACT.md` (§7 & §11).
+Dịch vụ nội bộ (Internal Service) thực thi OpenCode CLI cho Trợ lý Marketing AI MarketFlow.
+Xem thêm đặc tả kiến trúc tại [docs/AI_ASSISTANT.md](../docs/AI_ASSISTANT.md).
 
 ---
 

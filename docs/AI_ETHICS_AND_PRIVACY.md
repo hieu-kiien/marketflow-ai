@@ -2,7 +2,7 @@
 
 > Hệ thống: MarketFlow  
 > Tài liệu: Kiến trúc bảo mật, quyền riêng tư dữ liệu & chống ảo giác AI  
-> Căn cứ kỹ thuật: `docs/rebuild/CONTRACT.md`, `docs/rebuild/P0_SPIKE_REPORT.md`  
+> Căn cứ kỹ thuật: `docs/AI_ASSISTANT.md`, `deploy/opencode/prompts/*`  
 
 ---
 
@@ -98,7 +98,7 @@ Hệ thống áp dụng nguyên tắc tối thiểu hoá dữ liệu (Data Minim
 
 ## 6. Minh chứng Phòng thủ Tấn công Prompt Injection
 
-Trong quá trình thử nghiệm thực nghiệm Spike P0 (`docs/rebuild/P0_SPIKE_REPORT.md`), hệ thống đã được kiểm thử trước các kịch bản tấn công phi kỹ thuật nhằm chiếm quyền điều khiển mô hình:
+Trong quá trình thử nghiệm thực nghiệm trên VPS, hệ thống đã được kiểm thử trước các kịch bản tấn công phi kỹ thuật nhằm chiếm quyền điều khiển mô hình:
 
 | Kịch bản tấn công / Prompt đối kháng | Kết quả kiểm thử trên VPS | Đánh giá an toàn |
 |---|---|---|

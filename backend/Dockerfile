@@ -16,4 +16,5 @@ USER appuser
 EXPOSE 8000
 
 # Migration chạy trong `command` của docker-compose (alembic upgrade head) trước khi khởi động uvicorn.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Giữ --workers 1 để khớp với AssistantEventBus và _running_turns in-memory trong tiến trình API.
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

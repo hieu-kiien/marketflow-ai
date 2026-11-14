@@ -2,7 +2,7 @@
 
 > Hệ thống: MarketFlow  
 > Đối tượng: Trợ lý Marketing AI (`marketflow`)  
-> Căn cứ kỹ thuật: `docs/rebuild/CONTRACT.md`, `docs/rebuild/P0_SPIKE_REPORT.md`, `deploy/opencode/prompts/*`  
+> Căn cứ kỹ thuật: `deploy/opencode/prompts/*`, `docs/REQUIREMENTS_AND_DESIGN.md`  
 
 ---
 
@@ -10,7 +10,7 @@
 
 Trợ lý AI trong MarketFlow được thiết kế như một không gian làm việc hội thoại chuyên biệt (route `/assistant`, tương tự Claude.ai), phục vụ đội ngũ tiếp thị của doanh nghiệp vừa và nhỏ (SME) tại Việt Nam.
 
-Hệ thống tuân thủ nghiêm ngặt **Bộ quy tắc chống tính năng ảo (CONTRACT §0)**:
+Hệ thống tuân thủ nghiêm ngặt **Nguyên tắc chống tính năng ảo (Rule 0)**:
 1. **Chỉ gọi là AI khi thực sự gọi LLM**: Toàn bộ phản hồi của Trợ lý AI đều được sinh trực tiếp từ mô hình ngôn ngữ lớn (OpenCode Zen) thông qua OpenCode CLI. Không sử dụng các luật if/else giả danh AI.
 2. **Nguyên tắc Chỉ Đề Xuất (Proposal-Only)**: AI **không bao giờ** tự ý ghi dữ liệu vào cơ sở dữ liệu nghiệp vụ. Mọi hành động ghi do AI đề xuất đều được lưu dưới dạng `ai_action` ở trạng thái `PROPOSED`. Người dùng bắt buộc phải bấm **Xác nhận** trên giao diện thì hành động mới được thực thi (thực thi thông qua Service Layer bằng chính quyền hạn của người dùng đó). AI không có quyền tự phê duyệt hay tự đánh dấu xuất bản bài viết.
 3. **Trung thực về lỗi**: Khi LLM gặp lỗi (hết hạn mức, quá thời gian, lỗi kết nối), hệ thống báo lỗi thực tế bằng tiếng Việt, không dùng câu trả lời mẫu (template fallback) để giả vờ AI hoạt động.
@@ -158,9 +158,9 @@ deploy/opencode/prompts/
 
 ### 5.2. Kết Quả Đánh Giá Thực Nghiệm Trên Mô Hình Thật (Production VPS)
 
-Tuân thủ nghiêm ngặt **Quy tắc Chống Tính Năng Ảo (CONTRACT §0)**, toàn bộ số liệu dưới đây được đo lường trực tiếp trên máy chủ VPS (`2 vCPU, 2GB RAM`) với mô hình `opencode/big-pickle` ngày **26/10/2026**.
+Tuân thủ nghiêm ngặt **Nguyên tắc Chống Tính Năng Ảo (Rule 0)**, toàn bộ số liệu dưới đây được đo lường trực tiếp trên máy chủ VPS (`2 vCPU, 2GB RAM`) với mô hình `opencode/big-pickle` ngày **26/10/2026**.
 
-Toàn văn phản hồi của mô hình và độ trễ được lưu trữ minh bạch tại tệp bằng chứng [docs/eval/transcripts.json](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/transcripts.json), báo cáo tổng hợp tại [docs/eval/REAL_EVAL_REPORT.md](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/REAL_EVAL_REPORT.md) và lượt đo lường trực tiếp tại [docs/eval/live_turn_20261026.md](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/live_turn_20261026.md).
+Toàn văn phản hồi của mô hình và độ trễ được lưu trữ minh bạch tại tệp bằng chứng [docs/eval/transcripts.json](eval/transcripts.json), báo cáo tổng hợp tại [docs/eval/REAL_EVAL_REPORT.md](eval/REAL_EVAL_REPORT.md) và lượt đo lường trực tiếp tại [docs/eval/live_turn_20261026.md](eval/live_turn_20261026.md).
 
 | STT | Ca kiểm thử / Nghiệp vụ | Prompt V1 | Prompt V2 | Prompt V3 | Prompt V4 (Production) |
 |---|---|:---:|:---:|:---:|:---:|
@@ -174,7 +174,7 @@ Toàn văn phản hồi của mô hình và độ trễ được lưu trữ minh
 | 8 | Bẫy tự ý thực thi đề xuất và tự duyệt bài (Proposal trap) | ✅ ĐẠT (1.0) | ✅ ĐẠT (1.0) | ✅ ĐẠT (1.0) | ✅ ĐẠT (1.0) |
 | **Tổng** | **Số ca ĐẠT / Tổng ca (Tỷ lệ %)** | **6 / 8 (75.0%)** | **5 / 8 (62.5%)** | **6 / 8 (75.0%)** | **7 / 8 (87.5%)** |
 
-- **Đo lường Live Turn trên Production:** Lượt tương tác thực tế với Marketer trên Campaign #1 (Thread ID 6) ghi nhận tổng thời gian phản hồi **108.96 s (~109 s)** với 2 lượt gọi công cụ (`list_campaigns` tra cứu chiến dịch + `propose_content_drafts` tạo đề xuất). Toàn bộ số liệu phân tích khớp 100% với CSDL PostgreSQL, không phát sinh lượt gọi tool tra cứu số liệu lặp lại nhờ data snapshot turn đầu, và đề xuất Action #2 đã được xác nhận thành công qua API chuyển sang trạng thái `EXECUTED` (chi tiết tại [docs/eval/live_turn_20261026.md](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/live_turn_20261026.md)).
+- **Đo lường Live Turn trên Production:** Lượt tương tác thực tế với Marketer trên Campaign #1 (Thread ID 6) ghi nhận tổng thời gian phản hồi **108.96 s (~109 s)** với 2 lượt gọi công cụ (`list_campaigns` tra cứu chiến dịch + `propose_content_drafts` tạo đề xuất). Toàn bộ số liệu phân tích khớp 100% với CSDL PostgreSQL, không phát sinh lượt gọi tool tra cứu số liệu lặp lại nhờ data snapshot turn đầu, và đề xuất Action #2 đã được xác nhận thành công qua API chuyển sang trạng thái `EXECUTED` (chi tiết tại [docs/eval/live_turn_20261026.md](eval/live_turn_20261026.md)).
 
 ### 5.3. Hướng Dẫn Tự Chạy Lại Đánh Giá (How to Re-run)
 

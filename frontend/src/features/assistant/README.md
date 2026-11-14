@@ -18,7 +18,7 @@ Khu vực Trợ lý AI được thiết kế theo mô hình không gian làm vi�
 
 ## 2. Giao thức Luồng sự kiện SSE (Server-Sent Events)
 
-Theo quy ước tại `CONTRACT.md` §6 và §11:
+Quy ước tích hợp giữa Frontend và Backend API:
 - Client sử dụng `fetch` + `ReadableStream` với phương thức `POST`, header `Authorization: Bearer <JWT>` và body JSON (do chuẩn `EventSource` của trình duyệt không hỗ trợ POST).
 - Endpoint gửi tin nhắn: `POST /api/v1/assistant/threads/{id}/messages`
 - Endpoint tạo lại phản hồi: `POST /api/v1/assistant/messages/{id}/regenerate`

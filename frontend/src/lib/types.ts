@@ -1,5 +1,5 @@
 /**
- * Kiểu dữ liệu dùng chung, phản chiếu docs/rebuild/CONTRACT.md §3, §4, §6.
+ * Kiểu dữ liệu dùng chung cho Frontend SPA, đồng bộ với schema API Backend.
  * Quy ước: ngày `YYYY-MM-DD` (string), thời điểm ISO-8601 có timezone (string),
  * tiền là số nguyên VND (number). Tỷ lệ có mẫu số 0 trả về `null`.
  */

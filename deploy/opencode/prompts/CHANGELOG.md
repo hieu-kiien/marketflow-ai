@@ -1,8 +1,8 @@
 # Nhật Ký Phát Triển Prompt Trợ Lý AI (MarketFlow v2)
 
-Tài liệu này ghi lại quá trình tiến hóa của System Prompt cho Trợ lý Marketing AI (`marketflow`) qua 4 phiên bản, tuân thủ nghiêm ngặt **Quy tắc Chống Tính Năng Ảo & Bằng Chứng Thực Nghiệm (CONTRACT §0)**.
+Tài liệu này ghi lại quá trình tiến hóa của System Prompt cho Trợ lý Marketing AI (`marketflow`) qua 4 phiên bản, tuân thủ nghiêm ngặt **Nguyên tắc Chống Tính Năng Ảo & Bằng Chứng Thực Nghiệm (Rule 0)**.
 
-Toàn bộ số liệu và trích dẫn trong nhật ký này được ghi nhận trực tiếp từ các lượt thực thi thật trên máy chủ VPS ngày **26/10/2026** thông qua công cụ OpenCode CLI (`opencode/big-pickle`), lưu trữ đầy đủ tại tệp bằng chứng [docs/eval/transcripts.json](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/transcripts.json) và báo cáo thực nghiệm [docs/eval/REAL_EVAL_REPORT.md](file:///c:/Users/hieuk/Desktop/Ứng%20Dụng%20AI/docs/eval/REAL_EVAL_REPORT.md).
+Toàn bộ số liệu và trích dẫn trong nhật ký này được ghi nhận trực tiếp từ các lượt thực thi thật trên máy chủ VPS ngày **26/10/2026** thông qua công cụ OpenCode CLI (`opencode/big-pickle`), lưu trữ đầy đủ tại tệp bằng chứng [docs/eval/transcripts.json](../../../docs/eval/transcripts.json) và báo cáo thực nghiệm [docs/eval/REAL_EVAL_REPORT.md](../../../docs/eval/REAL_EVAL_REPORT.md).
 
 ---
 
